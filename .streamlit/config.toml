@@ -1,10 +1,10 @@
 [theme]
 base="light"
-primaryColor = "blue"
-backgroundColor = "white"
+primaryColor = "#489FE8"
+backgroundColor = "#FFFFFF"
 secondaryBackgroundColor = "#f0f0f5"
-textColor = "black"
-font = "sans serif"
+textColor = "#31333F"
+font = "Sans serif"
 
 
 
