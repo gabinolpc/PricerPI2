@@ -178,16 +178,15 @@ class CallSpread:
 
     def price(self):
         """Prix du Short Call Spread"""
-        return self.call_short.price - self.call_long.price
+        return self.call_long.price - self.call_short.price
 
     def payoff_long(self, S_T):
-        """Calcule le payoff long du Call Spread (acheter un call short et vendre un call long)."""
-        return self.call_short.payoff_long(S_T) + self.call_long.payoff_short(S_T)
+        """Calcule le payoff du Call Spread pour la position Long (Acheter un call avec un strike inférieure et vendre un call avec un strike supérieur)."""
+        return self.call_long.payoff_long(S_T) - self.call_short.payoff_long(S_T)
     def payoff_short(self, S_T):
-        """Calcule le payoff short du Call Spread (vendre un call short et acheter un call long)."""
-        # Correction ici : utiliser le payoff du short call
-        return self.call_short.payoff_short(S_T) + self.call_long.payoff_long(S_T)
-    
+        """Calcule le payoff du Call Spread pour la position Short (Inverse)."""
+        return self.call_long.payoff_short(S_T) - self.call_short.payoff_short(S_T)
+
     def delta(self):
         return self.call_long.delta() - self.call_short.delta()
     def gamma(self):

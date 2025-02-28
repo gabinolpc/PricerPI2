@@ -707,8 +707,8 @@ elif section == "Options":
             st.session_state.previous_volatility = volatility
 
             # Vérification des inputs
-            if strike_price_long <= strike_price_short:
-                st.error("❌ Erreur : Le strike du Call Long doit être **supérieur** au strike du Call Short.")
+            if strike_price_long >= strike_price_short:
+                st.error("❌ Erreur : Le strike du Call Long doit être **inférieur** au strike du Call Short.")
                 disable_calculate = True  # Désactive le bouton de calcul
             else:
                 disable_calculate = False  # Active le bouton de calcul
