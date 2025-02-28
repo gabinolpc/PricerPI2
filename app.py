@@ -7,7 +7,8 @@ from Forward import Forward
 from Option import Call, Put, Straddle, Strangle, CallSpread
 
 # Titre de l'application
-st.markdown("<h1 style='text-align: center;'>GabPricer</h1>", unsafe_allow_html=True)
+st.set_page_config(layout="wide")
+st.markdown("<h1 style='text-align: center; color: #2C3E50;'>GabPricer</h1>", unsafe_allow_html=True)
 
 # Menu avec sections déroulantes
 section = st.sidebar.radio("📋 Menu", ["Accueil", "BondPricer", "Contrats Forward & Futures", "Options"])

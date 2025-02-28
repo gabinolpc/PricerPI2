@@ -1,14 +1,7 @@
 [theme]
-base="light"
-primaryColor = "#4FA6CE"
-backgroundColor = "#FFFFFF"
-secondaryBackgroundColor = "#f0f0f5"
-textColor = "#31333F"
+base = "light"
+primaryColor = "#003366"  # Bleu marine
+backgroundColor = "#F7F7F7"  # Gris clair
+secondaryBackgroundColor = "#FFFFFF"  # Blanc pur
+textColor = "#2C3E50"  # Gris foncé, presque noir
 font = "Sans serif"
-
-
-
-
-
-
-
