@@ -1,4 +1,4 @@
-matplotlib
-streamlit
-pandas
-numpy
+altair==5.5.0
+matplotlib==3.10.1
+pandas==2.2.3
+scipy==1.10.0
