@@ -253,7 +253,7 @@ elif section == "Forward & Future":
 elif section == "Options":
 
     # Sous-sections dans le menu "Options"
-    option_type = st.sidebar.radio("📝 Choisir le type d'option", ["Call", "Put", "Straddle", "Strangle", "CallSpread"])
+    option_type = st.sidebar.radio("📝 Choisir le type d'option", ["Call", "Put", "Straddle", "Strangle", "Call Spread"])
 
     if option_type == "Call":
         # Créer une mise en page avec deux colonnes
@@ -673,7 +673,7 @@ elif section == "Options":
                     <p style="text-align: center;">Cliquez sur 'Calculer le prix du Strangle' pour afficher les graphiques.</p>
                 </div>
                 """, unsafe_allow_html=True)
-    elif option_type == "CallSpread":
+    elif option_type == "Call Spread":
         col1, col2 = st.columns(2)
 
         with col1:
