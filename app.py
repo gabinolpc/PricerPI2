@@ -309,8 +309,8 @@ elif section == "Options":
                 st.write(f"💶 **Prix du Call** : {call_price:.2f} €")
 
                 # Afficher les valeurs des grecs
-                st.write(f"**α** : {call_option.delta():.4f}")
-                st.write(f"**γ** : {call_option.gamma():.4f}")
+                st.write(f"**Δ** : {call_option.delta():.4f}")
+                st.write(f"**Γ** : {call_option.gamma():.4f}")
                 st.write(f"**ν** : {call_option.vega():.4f}")
                 st.write(f"**θ** : {call_option.theta():.4f}")
                 st.write(f"**ρ** : {call_option.rho():.4f}")
@@ -422,8 +422,8 @@ elif section == "Options":
                 st.write(f"💶 **Prix du Put** : {put_price:.2f} €")
 
                 # Afficher les valeurs des grecs
-                st.write(f"**α** : {put_option.delta():.4f}")
-                st.write(f"**γ** : {put_option.gamma():.4f}")
+                st.write(f"**Δ** : {put_option.delta():.4f}")
+                st.write(f"**Γ** : {put_option.gamma():.4f}")
                 st.write(f"**ν** : {put_option.vega():.4f}")
                 st.write(f"**θ** : {put_option.theta():.4f}")
                 st.write(f"**ρ** : {put_option.rho():.4f}")
@@ -523,8 +523,8 @@ elif section == "Options":
                 st.write(f"💶 **Prix du Straddle** : {straddle_price:.2f} €")
 
                 # Afficher les valeurs des grecs
-                st.write(f"**α** : {straddle_option.delta():.4f}")
-                st.write(f"**γ** : {straddle_option.gamma():.4f}")
+                st.write(f"**Δ** : {straddle_option.delta():.4f}")
+                st.write(f"**Γ** : {straddle_option.gamma():.4f}")
                 st.write(f"**ν** : {straddle_option.vega():.4f}")
                 st.write(f"**θ** : {straddle_option.theta():.4f}")
                 st.write(f"**ρ** : {straddle_option.rho():.4f}")
@@ -622,8 +622,8 @@ elif section == "Options":
                 st.write(f"💶 **Prix du Strangle** : {strangle_price:.2f} €")
 
                 # Afficher les valeurs des grecs
-                st.write(f"**α** : {strangle_option.delta():.4f}")
-                st.write(f"**γ** : {strangle_option.gamma():.4f}")
+                st.write(f"**Δ** : {strangle_option.delta():.4f}")
+                st.write(f"**Γ** : {strangle_option.gamma():.4f}")
                 st.write(f"**ν** : {strangle_option.vega():.4f}")
                 st.write(f"**θ** : {strangle_option.theta():.4f}")
                 st.write(f"**ρ** : {strangle_option.rho():.4f}")
@@ -724,8 +724,8 @@ elif section == "Options":
                 st.write(f"💶 **Prix du Call Spread** : {call_spread_price:.2f} €")
 
                 # Afficher les valeurs des grecs
-                st.write(f"**α** : {call_spread_option.delta():.4f}")
-                st.write(f"**γ** : {call_spread_option.gamma():.4f}")
+                st.write(f"**Δ** : {call_spread_option.delta():.4f}")
+                st.write(f"**Γ** : {call_spread_option.gamma():.4f}")
                 st.write(f"**ν** : {call_spread_option.vega():.4f}")
                 st.write(f"**θ** : {call_spread_option.theta():.4f}")
                 st.write(f"**ρ** : {call_spread_option.rho():.4f}")

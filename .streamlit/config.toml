@@ -4,4 +4,4 @@ primaryColor = "#2C3E50"  # Bleu marine
 backgroundColor = "#F7F7F7"  # Gris clair
 secondaryBackgroundColor = "#FFFFFF"  # Blanc pur
 textColor = "#2C3E50"  # Gris foncé, presque noir
-font = "Sans serif"
+font = "sans serif"
