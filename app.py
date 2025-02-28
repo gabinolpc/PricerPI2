@@ -11,7 +11,7 @@ st.set_page_config(layout="wide")
 st.markdown("<h1 style='text-align: center; color: #2C3E50;'>GabPricer</h1>", unsafe_allow_html=True)
 
 # Menu avec sections déroulantes
-section = st.sidebar.radio("📋 Menu", ["Accueil", "BondPricer", "Contrats Forward & Futures", "Options"])
+section = st.sidebar.radio("📋 Menu", ["Accueil", "Bond", "Forward & Future", "Options"])
 
 # Styles pour les sections
 def section_title(title):
@@ -20,13 +20,11 @@ def section_title(title):
 # Section Accueil
 if section == "Accueil":
     section_title("Bienvenue sur GabPricer !")
-    st.write("""
-    **GabPricer** vous permet d'explorer différents modèles de **pricing** pour des instruments financiers.
-    Vous pouvez naviguer entre les sections pour découvrir les fonctionnalités disponibles.
-    """)
+    st.write("""**GabPricer** vous permet d'explorer différents modèles de **pricing** pour des instruments financiers.
+    Vous pouvez naviguer entre les sections pour découvrir les fonctionnalités disponibles.""")
 
-# Section Obligations
-elif section == "BondPricer":
+# Section Bond
+elif section == "Bond":
 
     # Créer une mise en page avec deux colonnes
     col1, col2 = st.columns(2)
@@ -34,7 +32,7 @@ elif section == "BondPricer":
     # Colonne 1 (Pricing à gauche)
     with col1:
         # Inputs
-        st.write("### BondPricer")
+        st.write("### Bond")
         
         # Récupérer les valeurs actuelles des inputs
         current_face_value = st.number_input("Valeur nominale (VN) :", min_value=100, value=1000, step=100)
@@ -80,7 +78,7 @@ elif section == "BondPricer":
         bond = Bond(current_face_value, current_coupon_rate, current_ytm, current_maturity, current_frequency, current_compounding)
 
         # Calcul des caractéristiques de l'obligation
-        if st.button("Calculer les caractéristiques de l'obligation"):
+        if st.button("Calculer les caractéristiques du bond"):
             price = bond.price()
             duration = bond.duration()
             modified_duration = bond.modified_duration()
@@ -90,7 +88,7 @@ elif section == "BondPricer":
             st.subheader("Caractéristiques")
             st.write(f"💶 **Prix de l'Obligation** : {price:.2f} €")
             st.write(f"📅 **Duration de Macaulay** : {duration:.2f} années")
-            st.write(f"📅* **Duration Modifiée** : {modified_duration:.2f} années")
+            st.write(f"📅 **Duration Modifiée** : {modified_duration:.2f} années")
             st.write(f"📈 **Convexité** : {convexity:.2f}")
 
             # Stocker le prix de l'obligation pour l'affichage dans la colonne 2
@@ -144,12 +142,12 @@ elif section == "BondPricer":
             # Centrer et positionner la phrase plus bas
             st.markdown("""
             <div style="display: flex; justify-content: center; align-items: flex-end; height: 225px;">
-                <p style="text-align: center;">Cliquez sur 'Calculer les caractéristiques de l'obligation' pour afficher le graphique.</p>
+                <p style="text-align: center;">Cliquez sur 'Calculer les caractéristiques du bond' pour afficher le graphique.</p>
             </div>
             """, unsafe_allow_html=True)
 
 # Section Contrats Forward & Futures
-elif section == "Contrats Forward & Futures":
+elif section == "Forward & Future":
 
     # Créer une mise en page avec deux colonnes
     col1, col2 = st.columns(2)
@@ -157,7 +155,7 @@ elif section == "Contrats Forward & Futures":
     # Colonne 1 (Inputs à gauche)
     with col1:
         # Inputs
-        st.write("### Contrats Forward & Futures")
+        st.write("### Forward & Future")
         
         # Récupérer les valeurs actuelles des inputs
         current_spot_price = st.number_input("Prix au comptant (Spot) :", min_value=0.0, value=100.0, step=100.0)
@@ -193,7 +191,7 @@ elif section == "Contrats Forward & Futures":
         forward_contract = Forward(current_spot_price, current_maturity, current_interest_rate, current_dividend)
 
         # Calcul du prix du contrat Forward
-        if st.button("Calculer le prix du contrat Forward & Futures"):
+        if st.button("Calculer le prix du contrat Forward & Future"):
             forward_price = forward_contract.price()  # Calcul du prix Forward
             st.subheader("Caractéristiques")
             st.write(f"💶 **Prix du contrat Forward & Futures** : {forward_price:.2f} €")
@@ -247,7 +245,7 @@ elif section == "Contrats Forward & Futures":
             # Centrer et positionner la phrase plus bas
             st.markdown("""
             <div style="display: flex; justify-content: center; align-items: flex-end; height: 200px;">
-                <p style="text-align: center;">Cliquez sur 'Calculer le prix du contrat Forward' pour afficher le graphique.</p>
+                <p style="text-align: center;">Cliquez sur 'Calculer le prix du contrat Forward & Future' pour afficher le graphique.</p>
             </div>
             """, unsafe_allow_html=True)
 
