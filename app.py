@@ -233,7 +233,7 @@ elif section == "Forward & Future":
             ax.plot(spot_prices, long_payoffs, label="Long", color='green', linewidth=2)
             ax.plot(spot_prices, short_payoffs, label="Short", color='red', linewidth=2)
 
-            ax.set_title("Payoff du contrat Forward & Futures")
+            ax.set_title("Payoff du contrat Forward & Future")
             ax.set_xlabel("Prix Spot")
             ax.set_ylabel("Payoff (€)")
             ax.grid(True)
@@ -303,10 +303,10 @@ elif section == "Options":
             call_option = Call(current_spot_price, strike_price, maturity, interest_rate, volatility)
 
             # Calcul du prix de l'option Call
-            if st.button("Calculer le prix de l'option Call"):
+            if st.button("Calculer le prix du Call"):
                 call_price = call_option.price  
-                st.subheader("Caractéristiques")
-                st.write(f"💶 **Prix de l'option Call** : {call_price:.2f} €")
+                st.subheader("Caractéristiques (Long)")
+                st.write(f"💶 **Prix du Call** : {call_price:.2f} €")
 
                 # Afficher les valeurs des grecs
                 st.write(f"**α** : {call_option.delta():.4f}")
@@ -345,7 +345,7 @@ elif section == "Options":
                 # Création du graphique Long
                 fig_long, ax_long = plt.subplots(figsize=(8, 5))
                 ax_long.plot(spot_prices, long_payoffs, label="Long", color='green', linewidth=2)
-                ax_long.set_title("Payoff Long de l'option Call")
+                ax_long.set_title("Payoff Long Call")
                 ax_long.set_xlabel("Prix Spot")
                 ax_long.set_ylabel("Payoff (€)")
                 ax_long.grid(True)
@@ -355,7 +355,7 @@ elif section == "Options":
                 # Création du graphique Short
                 fig_short, ax_short = plt.subplots(figsize=(8, 5))
                 ax_short.plot(spot_prices, short_payoffs, label="Short", color='red', linewidth=2)
-                ax_short.set_title("Payoff Short de l'option Call")
+                ax_short.set_title("Payoff Short Call")
                 ax_short.set_xlabel("Prix Spot")
                 ax_short.set_ylabel("Payoff (€)")
                 ax_short.grid(True)
@@ -365,7 +365,7 @@ elif section == "Options":
                 # Centrer et positionner la phrase plus bas
                 st.markdown(""" 
                 <div style="display: flex; justify-content: center; align-items: center; height: 425px;">
-                    <p style="text-align: center;">Cliquez sur 'Calculer le prix de l'option Call' pour afficher les graphiques.</p>
+                    <p style="text-align: center;">Cliquez sur 'Calculer le prix du Call' pour afficher les graphiques.</p>
                 </div>
                 """, unsafe_allow_html=True)
     elif option_type == "Put":
@@ -416,10 +416,10 @@ elif section == "Options":
             put_option = Put(current_spot_price, strike_price, maturity, interest_rate, volatility)
 
             # Calcul du prix de l'option Put
-            if st.button("Calculer le prix de l'option Put"):
+            if st.button("Calculer le prix du Put"):
                 put_price = put_option.price()  # Calcul du prix Put
-                st.subheader("Caractéristiques")
-                st.write(f"💶 **Prix de l'option Put** : {put_price:.2f} €")
+                st.subheader("Caractéristiques (Long)")
+                st.write(f"💶 **Prix du Put** : {put_price:.2f} €")
 
                 # Afficher les valeurs des grecs
                 st.write(f"**α** : {put_option.delta():.4f}")
@@ -458,7 +458,7 @@ elif section == "Options":
                 # Création du graphique Long
                 fig_long, ax_long = plt.subplots(figsize=(8, 5))
                 ax_long.plot(spot_prices, long_payoffs, label="Long", color='green', linewidth=2)
-                ax_long.set_title("Payoff Long de l'option Put")
+                ax_long.set_title("Payoff Long Put")
                 ax_long.set_xlabel("Prix Spot")
                 ax_long.set_ylabel("Payoff (€)")
                 ax_long.grid(True)
@@ -468,7 +468,7 @@ elif section == "Options":
                 # Création du graphique Short
                 fig_short, ax_short = plt.subplots(figsize=(8, 5))
                 ax_short.plot(spot_prices, short_payoffs, label="Short", color='red', linewidth=2)
-                ax_short.set_title("Payoff Short de l'option Put")
+                ax_short.set_title("Payoff Short Put")
                 ax_short.set_xlabel("Prix Spot")
                 ax_short.set_ylabel("Payoff (€)")
                 ax_short.grid(True)
@@ -478,7 +478,7 @@ elif section == "Options":
                 # Centrer et positionner la phrase plus bas
                 st.markdown(""" 
                 <div style="display: flex; justify-content: center; align-items: center; height: 425px;">
-                    <p style="text-align: center;">Cliquez sur 'Calculer le prix de l'option Put' pour afficher les graphiques.</p>
+                    <p style="text-align: center;">Cliquez sur 'Calculer le prix du Put' pour afficher les graphiques.</p>
                 </div>
                 """, unsafe_allow_html=True)
     elif option_type == "Straddle":
@@ -517,10 +517,10 @@ elif section == "Options":
             straddle_option = Straddle(current_spot_price, strike_price, maturity, interest_rate, volatility)
 
             # Calcul du prix de l'option Straddle
-            if st.button("Calculer le prix de l'option Straddle"):
+            if st.button("Calculer le prix du Straddle"):
                 straddle_price = straddle_option.price()
-                st.subheader("Caractéristiques")
-                st.write(f"💶 **Prix de l'option Straddle** : {straddle_price:.2f} €")
+                st.subheader("Caractéristiques (Long)")
+                st.write(f"💶 **Prix du Straddle** : {straddle_price:.2f} €")
 
                 # Afficher les valeurs des grecs
                 st.write(f"**α** : {straddle_option.delta():.4f}")
@@ -557,7 +557,7 @@ elif section == "Options":
                 # Graphique Long
                 fig_long, ax_long = plt.subplots(figsize=(8, 5))
                 ax_long.plot(spot_prices, long_payoffs, label="Long", color='green', linewidth=2)
-                ax_long.set_title("Payoff Long de l'option Straddle")
+                ax_long.set_title("Payoff Long Straddle")
                 ax_long.set_xlabel("Prix Spot")
                 ax_long.set_ylabel("Payoff (€)")
                 ax_long.grid(True)
@@ -567,7 +567,7 @@ elif section == "Options":
                 # Graphique Short
                 fig_short, ax_short = plt.subplots(figsize=(8, 5))
                 ax_short.plot(spot_prices, short_payoffs, label="Short", color='red', linewidth=2)
-                ax_short.set_title("Payoff Short de l'option Straddle")
+                ax_short.set_title("Payoff Short Straddle")
                 ax_short.set_xlabel("Prix Spot")
                 ax_short.set_ylabel("Payoff (€)")
                 ax_short.grid(True)
@@ -576,7 +576,7 @@ elif section == "Options":
             else:
                 st.markdown(""" 
                 <div style="display: flex; justify-content: center; align-items: center; height: 425px;">
-                    <p style="text-align: center;">Cliquez sur 'Calculer le prix de l'option Straddle' pour afficher les graphiques.</p>
+                    <p style="text-align: center;">Cliquez sur 'Calculer le prix du Straddle' pour afficher les graphiques.</p>
                 </div>
                 """, unsafe_allow_html=True)
     elif option_type == "Strangle":
@@ -618,7 +618,7 @@ elif section == "Options":
             # Calcul du prix de l'option Strangle
             if st.button("Calculer le prix du Strangle"):
                 strangle_price = strangle_option.price()
-                st.subheader("Caractéristiques")
+                st.subheader("Caractéristiques (Long)")
                 st.write(f"💶 **Prix du Strangle** : {strangle_price:.2f} €")
 
                 # Afficher les valeurs des grecs
@@ -651,7 +651,7 @@ elif section == "Options":
                 # Graphique Long
                 fig_long, ax_long = plt.subplots(figsize=(8, 5))
                 ax_long.plot(spot_prices, long_payoffs, label="Long", color='green', linewidth=2)
-                ax_long.set_title("Payoff Long du Strangle")
+                ax_long.set_title("Payoff Long Strangle")
                 ax_long.set_xlabel("Prix Spot")
                 ax_long.set_ylabel("Payoff (€)")
                 ax_long.grid(True)
@@ -661,7 +661,7 @@ elif section == "Options":
                 # Graphique Short
                 fig_short, ax_short = plt.subplots(figsize=(8, 5))
                 ax_short.plot(spot_prices, short_payoffs, label="Short", color='red', linewidth=2)
-                ax_short.set_title("Payoff Short du Strangle")
+                ax_short.set_title("Payoff Short Strangle")
                 ax_short.set_xlabel("Prix Spot")
                 ax_short.set_ylabel("Payoff (€)")
                 ax_short.grid(True)
@@ -680,8 +680,8 @@ elif section == "Options":
             st.write("### Option Call Spread")
             # Inputs
             current_spot_price = st.number_input("Prix de l'actif sous-jacent (Spot) :", min_value=0.0, value=100.0, step=5.0)
-            strike_price_long = st.number_input("Prix d'exercice du Call Long (Strike Long) :", min_value=0.0, value=95.0, step=5.0)
-            strike_price_short = st.number_input("Prix d'exercice du Call Short (Strike Short) :", min_value=0.0, value=105.0, step=5.0)
+            strike_price_long = st.number_input("Prix d'exercice du Long Call (Strike Long) :", min_value=0.0, value=95.0, step=5.0)
+            strike_price_short = st.number_input("Prix d'exercice du Short Call (Strike Short) :", min_value=0.0, value=105.0, step=5.0)
             maturity = st.number_input("Maturité (en années) :", min_value=0.0, value=1.0, step=1.0)
             interest_rate = st.number_input("Taux d'intérêt annuel (%) :", min_value=0.0, value=5.0, step=0.5) / 100
             volatility = st.number_input("Volatilité (%) :", min_value=0.0, value=20.0, step=1.0) / 100
@@ -708,7 +708,7 @@ elif section == "Options":
 
             # Vérification des inputs
             if strike_price_long >= strike_price_short:
-                st.error("❌ Erreur : Le strike du Call Long doit être **inférieur** au strike du Call Short.")
+                st.error("❌ Erreur : Le strike du Long Call doit être **inférieur** au strike du Short Call.")
                 disable_calculate = True  # Désactive le bouton de calcul
             else:
                 disable_calculate = False  # Active le bouton de calcul
@@ -720,7 +720,7 @@ elif section == "Options":
             # Calcul du prix de l'option Call Spread
             if st.button("Calculer le prix du Call Spread", disabled=disable_calculate):
                 call_spread_price = call_spread_option.price()
-                st.subheader("Caractéristiques")
+                st.subheader("Caractéristiques (Long)")
                 st.write(f"💶 **Prix du Call Spread** : {call_spread_price:.2f} €")
 
                 # Afficher les valeurs des grecs
@@ -753,7 +753,7 @@ elif section == "Options":
                 # Graphique Long
                 fig_long, ax_long = plt.subplots(figsize=(8, 5))
                 ax_long.plot(spot_prices, long_payoffs, label="Long", color='green', linewidth=2)
-                ax_long.set_title("Payoff Long du Call Spread")
+                ax_long.set_title("Payoff Long Call Spread")
                 ax_long.set_xlabel("Prix Spot")
                 ax_long.set_ylabel("Payoff (€)")
                 ax_long.grid(True)
@@ -763,7 +763,7 @@ elif section == "Options":
                 # Graphique Short
                 fig_short, ax_short = plt.subplots(figsize=(8, 5))
                 ax_short.plot(spot_prices, short_payoffs, label="Short", color='red', linewidth=2)
-                ax_short.set_title("Payoff Short du Call Spread")
+                ax_short.set_title("Payoff Short Call Spread")
                 ax_short.set_xlabel("Prix Spot")
                 ax_short.set_ylabel("Payoff (€)")
                 ax_short.grid(True)

@@ -172,7 +172,7 @@ class Strangle:
 
 class CallSpread:
     def __init__(self, S, K_long, K_short, T, r, sigma):
-        """Call - Call avec les même paramètres sauf K"""
+        """Call - Call (Acheter un call avec un strike inférieure et vendre un call avec un strike supérieur)"""
         self.call_long = Call(S, K_long, T, r, sigma)   # Crée une option Call (long)
         self.call_short = Call(S, K_short, T, r, sigma)  # Crée une option Call (short)
 
@@ -181,10 +181,10 @@ class CallSpread:
         return self.call_long.price - self.call_short.price
 
     def payoff_long(self, S_T):
-        """Calcule le payoff du Call Spread pour la position Long (Acheter un call avec un strike inférieure et vendre un call avec un strike supérieur)."""
+        """Calcule le payoff du Call Spread pour la position Long"""
         return self.call_long.payoff_long(S_T) - self.call_short.payoff_long(S_T)
     def payoff_short(self, S_T):
-        """Calcule le payoff du Call Spread pour la position Short (Inverse)."""
+        """Calcule le payoff du Call Spread pour la position Short"""
         return self.call_long.payoff_short(S_T) - self.call_short.payoff_short(S_T)
 
     def delta(self):
