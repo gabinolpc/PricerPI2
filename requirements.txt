@@ -2,5 +2,5 @@ altair==5.5.0
 matplotlib==3.10.1
 pandas==2.2.3
 scipy==1.10.0
-yfinance==0.2.18
+yfinance==0.2.54
 plotly>=5.0.0
