@@ -797,8 +797,8 @@ elif section == "Suivi de Position":
     ticker = st.text_input("Entrez le ticker de l'actif :")
     underlying = Underlying(ticker)
     underlying = st.session_state.get('underlying', underlying)
-    r = FreeRate()
-    r.update_rate()
+    r = FreeRate(0.03)
+    #r.update_rate()
 
     # Création de 4 colonnes
     col1, col2, col3, col4 = st.columns([1, 1.4, 4, 5])
