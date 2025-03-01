@@ -3,21 +3,21 @@ from scipy.stats import norm
 from Greeks_parameters import Underlying, TimeToMaturity, FreeRate
 
 class Call:
-    def __init__(self, S, K, T, r, sigma, purchase_price=None):
+    def __init__(self, S, K, T, r, sigma, transaction_price=None):
         """Constructeur principal avec des valeurs brutes"""
-        self.S = S                            # Prix de l'actif sous-jacent (Spot)
-        self.K = K                            # Prix d'exercice (Strike)
-        self.T = T                            # Temps jusqu'à expiration
-        self.r = r                            # Taux d'intérêt sans risque
-        self.sigma = sigma                    # Volatilité
-        self.price = None                     # Initialisé à None
-        self.purchase_price = purchase_price  # Initialisé à None ou à un prix donné
-        self.pnl = None                       # P&L initialisé à None
+        self.S = S                                  # Prix de l'actif sous-jacent (Spot)
+        self.K = K                                  # Prix d'exercice (Strike)
+        self.T = T                                  # Temps jusqu'à expiration
+        self.r = r                                  # Taux d'intérêt sans risque
+        self.sigma = sigma                          # Volatilité
+        self.price = None                           # Initialisé à None
+        self.transaction_price = transaction_price  # Initialisé à None ou à un prix donné
+        self.pnl = None                             # P&L initialisé à None
 
         self.compute_price()  # Calcul du prix de l'option au moment de l'initialisation
 
     @classmethod
-    def from_instances(cls, underlying, strike, time_to_maturity, free_rate, purchase_price=None):
+    def from_instances(cls, underlying, strike, time_to_maturity, free_rate, transaction_price=None):
         """Deuxième constructeur utilisant des instances d'autres classes"""
         return cls(
             S=underlying.spot_price,
@@ -25,7 +25,7 @@ class Call:
             T=time_to_maturity.value,
             r=free_rate.value,
             sigma=underlying.implied_vol,
-            purchase_price=purchase_price
+            transaction_price=transaction_price
         )
 
     def compute_price(self):
@@ -34,10 +34,13 @@ class Call:
         d2 = d1 - self.sigma * math.sqrt(self.T)
         self.price = self.S * norm.cdf(d1) - self.K * math.exp(-self.r * self.T) * norm.cdf(d2)
 
-    def update_pnl(self):
-        """Met à jour le P&L en fonction du prix actuel de l'option"""
-        if self.purchase_price is not None and self.price is not None:
-            self.pnl = self.price - self.purchase_price
+    def update_pnl(self, pos="Call"):
+        """Met à jour le P&L en fonction du prix actuel de l'option et de la position"""
+        if self.transaction_price is not None and self.price is not None:
+            if pos == "Long":
+                self.pnl = self.price - self.transaction_price  # Position Long
+            elif pos == "Short":
+                self.pnl = self.transaction_price - self.price  # Position Short
         else:
             self.pnl = None
 
@@ -55,31 +58,41 @@ class Call:
 
     def payoff_long(self, S_T):
         return max(S_T - self.K, 0)
-
     def payoff_short(self, S_T):
         return -max(S_T - self.K, 0)
 
-    def delta(self):
+    def delta(self, pos="Long"):
         d1 = (math.log(self.S / self.K) + (self.r + 0.5 * self.sigma ** 2) * self.T) / (self.sigma * math.sqrt(self.T))
-        return norm.cdf(d1)
-
-    def gamma(self):
+        if pos == "Long":
+            return norm.cdf(d1)
+        elif pos == "Short":
+            return -norm.cdf(d1)
+    def gamma(self, pos="Long"):
         d1 = (math.log(self.S / self.K) + (self.r + 0.5 * self.sigma ** 2) * self.T) / (self.sigma * math.sqrt(self.T))
         return norm.pdf(d1) / (self.S * self.sigma * math.sqrt(self.T))
-
-    def vega(self):
+    def vega(self, pos="Long"):
         d1 = (math.log(self.S / self.K) + (self.r + 0.5 * self.sigma ** 2) * self.T) / (self.sigma * math.sqrt(self.T))
-        return self.S * norm.pdf(d1) * math.sqrt(self.T)
-
-    def theta(self):
-        d1 = (math.log(self.S / self.K) + (self.r + 0.5 * self.sigma ** 2) * self.T) / (self.sigma * math.sqrt(self.T))
-        d2 = d1 - self.sigma * math.sqrt(self.T)
-        return (-self.S * norm.pdf(d1) * self.sigma) / (2 * math.sqrt(self.T)) - self.r * self.K * math.exp(-self.r * self.T) * norm.cdf(d2)
-
-    def rho(self):
+        vega_val = self.S * norm.pdf(d1) * math.sqrt(self.T)
+        if pos == "Long":
+            return vega_val
+        elif pos == "Short":
+            return -vega_val
+    def theta(self, pos="Long"):
         d1 = (math.log(self.S / self.K) + (self.r + 0.5 * self.sigma ** 2) * self.T) / (self.sigma * math.sqrt(self.T))
         d2 = d1 - self.sigma * math.sqrt(self.T)
-        return self.K * self.T * math.exp(-self.r * self.T) * norm.cdf(d2)
+        theta_val = (-self.S * norm.pdf(d1) * self.sigma) / (2 * math.sqrt(self.T)) - self.r * self.K * math.exp(-self.r * self.T) * norm.cdf(d2)
+        if pos == "Long":
+            return theta_val
+        elif pos == "Short":
+            return -theta_val
+    def rho(self, pos="Long"):
+        d1 = (math.log(self.S / self.K) + (self.r + 0.5 * self.sigma ** 2) * self.T) / (self.sigma * math.sqrt(self.T))
+        d2 = d1 - self.sigma * math.sqrt(self.T)
+        rho_val = self.K * self.T * math.exp(-self.r * self.T) * norm.cdf(d2)
+        if pos == "Long":
+            return rho_val
+        elif pos == "Short":
+            return -rho_val
 
 class Put:
     def __init__(self, S, K, T, r, sigma):

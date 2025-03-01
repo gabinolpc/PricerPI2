@@ -1,7 +1,6 @@
 import math
 
 class Bond:
-
     def __init__(self, face_value, coupon_rate, ytm, maturity, frequency=1, compounding='Discrète'):
         self.face_value = face_value    # Valeur nominale (VN)
         self.coupon_rate = coupon_rate  # Taux de coupon

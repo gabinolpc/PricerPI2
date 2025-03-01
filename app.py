@@ -1,26 +1,34 @@
 import streamlit as st
 import matplotlib.pyplot as plt
-import math
+import yfinance as yf
+import datetime
+import plotly.graph_objects as go
+#import math
+#import time
 
 from Bond import Bond
 from Forward import Forward
 from Option import Call, Put, Straddle, Strangle, CallSpread
+from Greeks_parameters import Underlying, TimeToMaturity, FreeRate
 
 # Titre de l'application
 st.set_page_config(layout="wide")
-st.markdown("<h1 style='text-align: center; color: #2C3E50;'>GabPricer</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #2C3E50;'>PricerPI2</h1>", unsafe_allow_html=True)
 
 # Menu avec sections déroulantes
-section = st.sidebar.radio("📋 Menu", ["Accueil", "Bond", "Forward & Future", "Options"])
+section = st.sidebar.radio("📋 Menu", ["Accueil", "Bond", "Forward & Future", "Options", "Suivi de Position"])
 
-# Styles pour les sections
-def section_title(title):
-    st.markdown(f"### {title}", unsafe_allow_html=True)
+# Réinitialiser les données de session lorsque la section change
+if 'current_section' not in st.session_state:
+    st.session_state['current_section'] = section  # Initialisation au premier démarrage
+if st.session_state['current_section'] != section:
+    st.session_state.clear()  # Clear toutes les données de session
+    st.session_state['current_section'] = section  # Met à jour la section sélectionnée
 
 # Section Accueil
 if section == "Accueil":
-    section_title("Bienvenue sur GabPricer !")
-    st.write("""**GabPricer** vous permet d'explorer différents modèles de **pricing** pour des instruments financiers.
+    st.write("### Bienvenue sur PricerPI2 !")
+    st.write("""**PricerPI2** vous permet d'explorer différents modèles de **pricing** pour des instruments financiers.
     Vous pouvez naviguer entre les sections pour découvrir les fonctionnalités disponibles.""")
 
 # Section Bond
@@ -35,12 +43,12 @@ elif section == "Bond":
         st.write("### Bond")
         
         # Récupérer les valeurs actuelles des inputs
-        current_face_value = st.number_input("Valeur nominale (VN) :", min_value=100, value=1000, step=100)
+        current_face_value = st.number_input("Valeur nominale (VN) :", min_value=100.0, value=1000.0, step=100.0)
         current_coupon_rate = st.number_input("Taux de coupon (%) :", min_value=0.0, value=5.0, step=0.5) / 100  # Divisé par 100
         current_ytm = st.number_input("Yield to Maturity (YTM) (%) :", min_value=0.0, value=3.0, step=0.5) / 100  # Divisé par 100
-        current_maturity = st.number_input("Maturité (en années) :", min_value=1, value=10)
-        current_frequency = st.selectbox("Fréquence des paiements de coupons :", [1, 2, 4, 12])
-        current_compounding = st.selectbox("Méthode de composition :", ["Continue", "Discrète"])
+        current_maturity = st.number_input("Maturité (en années) :", min_value=1.0, value=5.0)
+        current_frequency = st.selectbox("Fréquence des paiements de coupons :", [1, 2, 4, 12], index=0)
+        current_compounding = st.selectbox("Méthode de composition :", ["Continue", "Discrète"], index=1)
 
         # Si les inputs ont changé par rapport aux précédentes valeurs, réinitialiser l'état de la session
         if (getattr(st.session_state, 'previous_face_value', None) != current_face_value or
@@ -159,9 +167,9 @@ elif section == "Forward & Future":
         
         # Récupérer les valeurs actuelles des inputs
         current_spot_price = st.number_input("Prix au comptant (Spot) :", min_value=0.0, value=100.0, step=100.0)
-        current_maturity = st.number_input("Maturité (en années) :", min_value=1, value=1)
+        current_maturity = st.number_input("Maturité (en années) :", min_value=0.0, value=3.0)
         current_interest_rate = st.number_input("Taux d'intérêt annuel (%) :", min_value=0.0, value=5.0, step=0.5) / 100  # Divisé par 100
-        current_dividend = st.number_input("Rendement du dividende (%) :", min_value=0.0, value=2.0, step=0.5) / 100  # Divisé par 100
+        current_dividend = st.number_input("Rendement du dividende (%) :", min_value=0.0, value=0.0, step=0.5) / 100  # Divisé par 100
 
         # Si les inputs ont changé par rapport aux précédentes valeurs, réinitialiser l'état de la session
         if (getattr(st.session_state, 'previous_spot_price', None) != current_spot_price or
@@ -254,6 +262,13 @@ elif section == "Options":
 
     # Sous-sections dans le menu "Options"
     option_type = st.sidebar.radio("📝 Choisir le type d'option", ["Call", "Put", "Straddle", "Strangle", "Call Spread"])
+
+    # Si la sous-section a changé, réinitialiser les données
+    if 'current_option_section' not in st.session_state:
+        st.session_state['current_option_section'] = option_type  # Initialisation de la sous-section au premier démarrage
+    if st.session_state['current_option_section'] != option_type:
+        st.session_state.clear()  # Clear toutes les données de session
+        st.session_state['current_option_section'] = option_type  # Met à jour la sous-section sélectionnée
 
     if option_type == "Call":
         # Créer une mise en page avec deux colonnes
@@ -775,3 +790,183 @@ elif section == "Options":
                     <p style="text-align: center;">Cliquez sur 'Calculer le prix du Call Spread' pour afficher les graphiques.</p>
                 </div>
                 """, unsafe_allow_html=True)
+
+#Section Suivi de Positions
+elif section == "Suivi de Position":
+    # Input du ticker
+    ticker = st.text_input("Entrez le ticker de l'actif :")
+    underlying = Underlying(ticker)
+    underlying = st.session_state.get('underlying', underlying)
+    r = FreeRate()
+    r.update_rate()
+
+    # Création de 4 colonnes
+    col1, col2, col3, col4 = st.columns([1, 1.4, 4, 5])
+
+    # Bouton de validation
+    with col1:
+        if st.button("Valider"):
+            if not ticker.strip():  # Vérifie si le champ est vide ou ne contient que des espaces
+                st.session_state['validated'] = False
+                with col3:
+                    st.error("❌ Veuillez entrer un ticker avant de valider.")
+            else:
+                try:
+                    underlying.update_data()
+                    if underlying.data.empty:
+                        st.session_state['validated'] = False
+                        with col3:
+                            st.error("❌ Ticker invalide. Veuillez réessayer.")
+                    else:
+                        st.session_state['underlying'] = underlying
+                        st.session_state['validated'] = True
+                        st.session_state['view_range'] = "1mo"  # Plage de vue par défaut
+                except Exception as e:
+                    st.session_state['validated'] = False
+                    with col3:
+                        st.error(f"❌ Ticker invalide. Veuillez réessayer.")
+
+    # Bouton de réinitialisation
+    with col2:
+        if st.button("Réinitialiser"):
+            st.session_state.clear()
+
+    st.markdown("---")
+
+    # Affichage du graphique si validation réussie
+    if st.session_state.get('validated', False):
+
+        # Affichage du titre centré avec le nom du sous-jacent
+        if underlying:
+            st.markdown(f"<h3 style='text-align: center;'>{underlying.name}</h3>", unsafe_allow_html=True)
+
+        # Sélection de la plage de vue
+        view_options = {
+            "5 jours": "5d",
+            "1 mois": "1mo",
+            "6 mois": "6mo",
+            "1 an": "1y",
+            "All": "max"
+        }
+
+        selected_range = st.selectbox("Plage de vue :", list(view_options.keys()), index=3)
+        st.session_state['view_range'] = view_options[selected_range]
+
+        # Mettre à jour les données avec la période sélectionnée
+        underlying.update_data(period=st.session_state['view_range'])
+
+        # Récupération des données
+        data = underlying.data  # Utilisation des données récupérées dans l'objet
+
+        # Calcul de la variation du sous-jacent en pourcentage
+        initial_price = data["Close"].iloc[0]  # Premier prix de clôture
+        final_price = data["Close"].iloc[-1]  # Dernier prix de clôture
+        variation = ((final_price - initial_price) / initial_price) * 100  # Variation en pourcentage
+
+        # Récupérer les informations du sous-jacent
+        spot_price = underlying.spot_price
+        historical_vol = underlying.historical_vol
+        implied_vol = underlying.implied_vol
+
+        # Définir la couleur du graphique en fonction de la variation
+        graph_color = 'green' if variation > 0 else 'red'
+
+        # Graphique interactif avec Plotly
+        fig = go.Figure()
+
+        # Tracer les données de clôture avec la couleur dynamique
+        fig.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name="Prix de Clôture", line=dict(color=graph_color)))
+
+        # Informations à afficher sous le titre
+        info_text = (
+            f"Variation: {variation:.2f}% | "
+            f"Spot Price: {spot_price:.2f} € | "
+            f"Free Rate (US): {r.value*100:.2f}% | "
+            f"Implied Vol: {implied_vol*100:.2f}% | "
+            f"Historical Vol: {historical_vol*100:.2f}% | " if historical_vol is not None else "Volatilité historique indisponible | "
+        )
+
+        # Ajouter un titre au graphique
+        fig.update_layout(
+            title=f"<b>{underlying.name} - Closing Price</b><br><span style='font-size: 10px;'>{info_text}</span>",
+        )
+
+        # Mettre à jour les axes et titres
+        fig.update_xaxes(title="Date")
+        fig.update_yaxes(title="Prix (€)")
+
+        # Afficher le graphique interactif
+        st.plotly_chart(fig, use_container_width=True)
+
+    # Création de deux colonnes pour les caractéristiques de l'option
+    if st.session_state.get('validated', False):
+        col_left, col_right = st.columns([1, 1])
+
+        with col_left:
+            st.write("### Caractéristiques")
+            position = st.selectbox("Choisissez la position :", ["Long", "Short"], key="pos_type", index=0)
+            option_type = st.selectbox("Choisissez l'option :", ["Call"], key="option_type", index=0)
+            transaction_price = st.number_input("Prix d'achat de l'option :", min_value=0.0, value=5.0, step=5.0)
+            K = st.number_input("Prix d'exercice (Strike) :", min_value=0.0, value=underlying.spot_price, step=5.0)
+            maturity = st.date_input("Date d'échéance :", min_value=datetime.date.today(), value=datetime.date.today() + datetime.timedelta(days=365))
+
+            if position != st.session_state.get('prev_position') or \
+               option_type != st.session_state.get('prev_option_type') or \
+               transaction_price != st.session_state.get('prev_transaction_price') or \
+               K != st.session_state.get('prev_K') or \
+               maturity != st.session_state.get('prev_maturity'):
+                st.session_state['option'] = None
+
+            st.session_state['prev_position'] = position
+            st.session_state['prev_option_type'] = option_type
+            st.session_state['prev_transaction_price'] = transaction_price
+            st.session_state['prev_K'] = K
+            st.session_state['prev_maturity'] = maturity
+
+            # Création de l'option si validée
+            if st.button("Suivre l'option"):
+                time_to_maturity = TimeToMaturity(maturity_date=maturity)
+
+                # Création de l'option selon le type choisi
+                if st.session_state['option_type'] == "Call":
+                    option = Call.from_instances(
+                        underlying=st.session_state['underlying'],
+                        strike=K,
+                        time_to_maturity=time_to_maturity,
+                        free_rate=r,
+                        transaction_price=transaction_price
+                    )
+                st.session_state['option'] = option
+
+        with col_right:
+            # Récupérer l'option créée dans l'état de session
+            option = st.session_state.get('option')
+            if option:
+                # Calculer le prix de l'option et son PnL
+                option_price = option.price  # Calcul du prix de l'option
+
+                if st.session_state['pos_type'] == "Long":
+                    option.update_pnl("Long")
+                elif st.session_state['pos_type'] == "Short":
+                    option.update_pnl("Short")
+
+                # Afficher le prix de l'option et le PnL
+                st.write("### Détails en direct")
+                st.write(f"💶 **Prix actuel de l'Option** : {option_price:.2f} €")
+                st.write(f"⚖️ **PnL actuel** : {option.pnl:.2f} €")
+
+                # Afficher les valeurs des grecs
+                st.write(f"**Δ** : {option.delta(st.session_state['pos_type']):.4f}")
+                st.write(f"**Γ** : {option.gamma(st.session_state['pos_type']):.4f}")
+                st.write(f"**ν** : {option.vega(st.session_state['pos_type']):.4f}")
+                st.write(f"**θ** : {option.theta(st.session_state['pos_type']):.4f}")
+                st.write(f"**ρ** : {option.rho(st.session_state['pos_type']):.4f}")
+            else:
+                st.markdown(""" 
+                <div style="display: flex; justify-content: center; align-items: center; height: 550px;">
+                    <p style="text-align: center;">Cliquez sur 'Suivre l'option' pour afficher les détails en direct.</p>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                
+
