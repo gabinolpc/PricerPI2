@@ -24,7 +24,8 @@ class Bond:
         for t in range(1, int(self.maturity * self.frequency + 1)):
             time = t / self.frequency  # Temps actualisé en année avant chaque versement de coupon
             price += self.actualize(self.coupon_rate * self.face_value / self.frequency, time)  # Coupons actualisés
-        price += self.actualize(self.face_value, self.maturity)  # Valeur nominale actualisée
+        #price += self.actualize(self.face_value, self.maturity)  # Valeur nominale actualisée
+        price += self.face_value / ((1 + self.ytm) ** (self.maturity))
         return price 
 
     def duration(self):
@@ -34,7 +35,8 @@ class Bond:
         for t in range(1, int(self.maturity * self.frequency + 1)):
             time = t / self.frequency  # Temps actualisé
             num_dur += time * self.actualize(self.coupon_rate * self.face_value / self.frequency, time)  
-        num_dur += self.maturity * self.actualize(self.face_value, self.maturity)  
+        #num_dur += self.maturity * self.actualize(self.face_value, self.maturity)  
+        num_dur += self.maturity * self.face_value / ((1 + self.ytm) ** (self.maturity))
         return num_dur / bond_price  # Duration de Macaulay
 
     def modified_duration(self):
@@ -49,5 +51,6 @@ class Bond:
         for t in range(1, int(self.maturity * self.frequency + 1)):
             time = t / self.frequency  
             num_convexity += (time ** 2) * self.actualize(self.coupon_rate * self.face_value / self.frequency, time)  
-        num_convexity += (self.maturity ** 2) * self.actualize(self.face_value, self.maturity)  
+        #num_convexity += (self.maturity ** 2) * self.actualize(self.face_value, self.maturity)  
+        num_convexity += (self.maturity ** 2) * self.face_value / ((1 + self.ytm) ** (self.maturity))
         return num_convexity / bond_price
