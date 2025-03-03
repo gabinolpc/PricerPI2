@@ -46,7 +46,7 @@ elif section == "Bond":
         current_face_value = st.number_input("Valeur nominale (VN) :", min_value=100.0, value=1000.0, step=100.0)
         current_coupon_rate = st.number_input("Taux de coupon (%) :", min_value=0.0, value=5.0, step=0.5) / 100  # Divisé par 100
         current_ytm = st.number_input("Yield to Maturity (YTM) (%) :", min_value=0.0, value=3.0, step=0.5) / 100  # Divisé par 100
-        current_maturity = st.number_input("Maturité (en années) :", min_value=1.0, value=5.0)
+        current_maturity = st.number_input("Maturité (en années) :", min_value=1.0, value=5.0, step=1.0)
         current_frequency = st.selectbox("Fréquence des paiements de coupons :", [1, 2, 4, 12], index=0)
         current_compounding = st.selectbox("Méthode de composition :", ["Continue", "Discrète"], index=1)
 
