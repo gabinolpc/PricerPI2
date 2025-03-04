@@ -53,6 +53,8 @@ class Underlying:
             self.implied_vol = (iv_calls + iv_puts) / 2
         except Exception as e:
             raise ValueError(f"Erreur lors de la récupération des données des options pour {self.ticker}: {e}")
+        
+        # 4 points si pas dde matiruté et 2 points si la même matu mais pas les mêmes strike
 
 class TimeToMaturity:
     def __init__(self, maturity_date, method=1):
@@ -81,6 +83,8 @@ class TimeToMaturity:
             return days_left / 360
         else:
             raise ValueError(f"Convention de calcul {self.method} non supportée. Méthodes disponibles: 0, 1, 2, 3, 4.")
+
+        #/365.25
 
 class FreeRate:
     def __init__(self, value=None):

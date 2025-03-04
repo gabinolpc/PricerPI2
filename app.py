@@ -233,8 +233,8 @@ elif section == "Forward & Future":
             spot_prices = [i for i in range(int(lower_bound), int(upper_bound) + 1)]  # Plage de prix Spot
 
             # Calcul des payoffs
-            long_payoffs = [max(spot - forward_price, 0) for spot in spot_prices]  # Payoff Long
-            short_payoffs = [max(forward_price - spot, 0) for spot in spot_prices]  # Payoff Short
+            long_payoffs = [forward_contract.payoff_long(spot) for spot in spot_prices]  # Payoff Long
+            short_payoffs = [forward_contract.payoff_short(spot) for spot in spot_prices]  # Payoff Short
 
             # Création du graphique
             fig, ax = plt.subplots(figsize=(8, 5))

@@ -54,3 +54,9 @@ class Bond:
         #num_convexity += (self.maturity ** 2) * self.actualize(self.face_value, self.maturity)  
         num_convexity += (self.maturity ** 2) * self.face_value / ((1 + self.ytm) ** (self.maturity))
         return num_convexity / bond_price
+
+# duration modifié bon en discret et continue = macaulay
+# t*(t+1)   Taux continue=t^2?      discret=time*time+1
+# Revoir payoff Futures 
+# Afficher pointillé des combinaisons d'options
+# Afficher graphe des greeks 
