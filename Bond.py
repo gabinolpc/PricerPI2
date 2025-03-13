@@ -24,7 +24,6 @@ class Bond:
         for t in range(1, int(self.maturity * self.frequency + 1)):
             time = t / self.frequency  # Temps actualisé en année avant chaque versement de coupon
             price += self.actualize(self.coupon_rate * self.face_value / self.frequency, time)  # Coupons actualisés
-        #price += self.actualize(self.face_value, self.maturity)  # Valeur nominale actualisée
         price += self.face_value / ((1 + self.ytm) ** (self.maturity))
         return price 
 
@@ -34,29 +33,35 @@ class Bond:
         num_dur = 0  # Numérateur
         for t in range(1, int(self.maturity * self.frequency + 1)):
             time = t / self.frequency  # Temps actualisé
-            num_dur += time * self.actualize(self.coupon_rate * self.face_value / self.frequency, time)  
-        #num_dur += self.maturity * self.actualize(self.face_value, self.maturity)  
+            num_dur += time * self.actualize(self.coupon_rate * self.face_value / self.frequency, time)    
         num_dur += self.maturity * self.face_value / ((1 + self.ytm) ** (self.maturity))
         return num_dur / bond_price  # Duration de Macaulay
 
     def modified_duration(self):
         """Calcule la duration modifiée de l'obligation."""
         macaulay_duration = self.duration()  # Duration de Macaulay
-        return macaulay_duration / (1 + self.ytm / self.frequency)  # Ajustée pour les variations du taux d'intérêt
+        if self.compounding == "Continue":
+            return macaulay_duration  # En composition continue, Mod. Duration = Macaulay Duration
+        elif self.compounding == "Discrète":
+            return macaulay_duration / (1 + self.ytm / self.frequency)  # En composition discrète
+        else:
+            raise ValueError(f"Méthode de composition '{self.compounding}' non supportée. Utiliser 'Continue' ou 'Discrète'.")
 
     def convexity(self):
         """Calcule la convexité de l'obligation."""
         bond_price = self.price()  # Prix de l'obligation
         num_convexity = 0  
         for t in range(1, int(self.maturity * self.frequency + 1)):
-            time = t / self.frequency  
-            num_convexity += (time ** 2) * self.actualize(self.coupon_rate * self.face_value / self.frequency, time)  
-        #num_convexity += (self.maturity ** 2) * self.actualize(self.face_value, self.maturity)  
-        num_convexity += (self.maturity ** 2) * self.face_value / ((1 + self.ytm) ** (self.maturity))
+            time = t / self.frequency 
+            if self.compounding == "Continue":
+                num_convexity += (time ** 2) * self.actualize(self.coupon_rate * self.face_value / self.frequency, time)
+            elif self.compounding == "Discrète":
+                num_convexity += (time * (time + 1)) * self.actualize(self.coupon_rate * self.face_value / self.frequency, time)
+            else:
+                raise ValueError(f"Méthode de composition '{self.compounding}' non supportée. Utiliser 'Continue' ou 'Discrète'.")
+        if self.compounding == "Continue":
+            num_convexity += (self.maturity ** 2) * self.face_value / ((1 + self.ytm) ** (self.maturity))
+        elif self.compounding == "Discrète":
+            num_convexity += (self.maturity * (self.maturity + 1)) * self.face_value / ((1 + self.ytm) ** (self.maturity))
         return num_convexity / bond_price
 
-# duration modifié bon en discret et continue = macaulay
-# t*(t+1)   Taux continue=t^2?      discret=time*time+1
-# Revoir payoff Futures 
-# Afficher pointillé des combinaisons d'options
-# Afficher graphe des greeks 

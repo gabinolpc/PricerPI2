@@ -18,7 +18,6 @@ class Underlying:
             asset = yf.Ticker(self.ticker)
             hist = asset.history(period=period)  # Utiliser la période spécifiée
             asset_info = asset.info
-            
             # Stocker les informations de l'actif
             self.name = asset_info.get("longName", self.ticker)  # Nom de l'underlying
             self.spot_price = hist["Close"].iloc[-1]  # Dernier prix de clôture
@@ -53,38 +52,22 @@ class Underlying:
             self.implied_vol = (iv_calls + iv_puts) / 2
         except Exception as e:
             raise ValueError(f"Erreur lors de la récupération des données des options pour {self.ticker}: {e}")
-        
-        # 4 points si pas dde matiruté et 2 points si la même matu mais pas les mêmes strike
 
 class TimeToMaturity:
-    def __init__(self, maturity_date, method=1):
-        self.method = method  # Méthode de calcul (par défaut: Actual/Actual)
+    def __init__(self, maturity_date):
         if maturity_date is not None:
             self.maturity_date = maturity_date  # Date d'échéance fournie
-            self.value = self.calculate_initial_value_from_maturity_date(maturity_date)  # Calculer la valeur de TTM à partir de la date d'échéance
+            self.value = self.calculate_value_from_maturity_date(maturity_date)  # Calculer la valeur de TTM à partir de la date d'échéance
         else:
             raise ValueError("Il faut fournir une date d'échéance.")
 
-    def calculate_initial_value_from_maturity_date(self, maturity_date):
+    def calculate_value_from_maturity_date(self, maturity_date):
         """Calcule la valeur de TimeToMaturity en fonction de la date d'échéance."""
-        today = datetime.datetime.today().date()  # On prend uniquement la partie date
+        today = datetime.datetime.today().date()  
         days_left = (maturity_date - today).days
         if days_left < 0:
             raise ValueError("La date d'échéance ne peut pas être dans le passé.")
-        if self.method == 0:  # US (Nasd) 30/360
-            return days_left / 360
-        elif self.method == 1:  # Actual/Actual
-            return days_left / 365
-        elif self.method == 2:  # Actual/360
-            return days_left / 360
-        elif self.method == 3:  # Actual/365
-            return days_left / 365
-        elif self.method == 4:  # European 30/360
-            return days_left / 360
-        else:
-            raise ValueError(f"Convention de calcul {self.method} non supportée. Méthodes disponibles: 0, 1, 2, 3, 4.")
-
-        #/365.25
+        return days_left / 365.25
 
 class FreeRate:
     def __init__(self, value=None):

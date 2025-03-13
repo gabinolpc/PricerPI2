@@ -968,5 +968,11 @@ elif section == "Suivi de Position":
                 </div>
                 """, unsafe_allow_html=True)
                 
-                
+# Duration modifié bon en discret et continue = macaulay GOOD
+# Convexité Taux continue=t^2 / Discret=time*time+1 GOOD
+# Revoir payoff Futures GOOD
+# Convention calcul TTM : 365.25 GOOD 
+# Afficher graphe des greeks PAS GOOD (Module Entrainement)
+# Afficher pointillé des combinaisons d'options PAS GOOD (Ca se superpose)
+# Calcul Implied vol : 1 point si même K+TTM, 2 points si même TTM mais pas même K, 4 points si pas même TTM+K PAS GOOD (Complexe)                
 
